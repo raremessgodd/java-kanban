@@ -1,2 +1,2 @@
-# java-kanban
-Repository for homework project.
+# __Репрозиторий проекта "Трекер задач"__
+
