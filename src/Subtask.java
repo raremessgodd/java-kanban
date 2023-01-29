@@ -1,7 +1,20 @@
 public class Subtask extends Task{
-    int epicId;
+    private int epicId;
 
     public Subtask(Epic epic) {
-        this.epicId = epic.taskId;
+        this.epicId = epic.getTaskId();
+    }
+
+    public void setThisEpic(Epic thisEpic) {
+        this.epicId = thisEpic.getTaskId();
+    }
+
+    public int getEpicId() {
+        return epicId;
+    }
+
+    @Override
+    public void setStatus(String status) {
+        super.status = status;
     }
 }
