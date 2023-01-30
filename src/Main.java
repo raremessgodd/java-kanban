@@ -1,4 +1,6 @@
+import manager.Manager;
 import java.util.Scanner;
+import tasks.*;
 
 public class Main {
 
@@ -63,7 +65,6 @@ public class Main {
                         break;
                     case ("Subtask"):
                         manager.deleteSubtaskById(id);
-
                         printInformation(manager);
                         break;
                     default:
@@ -87,8 +88,8 @@ public class Main {
                         break;
                     case ("Subtask"):
                         manager.getSubtaskById(id).setStatus(status);
-                        int epicId = manager.getAllSubtasks().get(id).getEpicId();
-                        manager.getAllEpics().get(epicId).updateStatus();
+                        int epicId = manager.getSubtaskById(id).getEpicId();
+                        manager.updateEpicStatus(manager.getEpicById(epicId));
                         printInformation(manager);
                         break;
                     default:
@@ -103,30 +104,30 @@ public class Main {
     public static void printInformation (Manager manager) {
         System.out.println("\nОбычные задачи:");
         System.out.println("------------------");
-        for (Integer key : manager.getAllTasks().keySet()) {
-            System.out.print("[" + manager.getAllTasks().get(key).getStatus() + "] ");
-            System.out.print(manager.getAllTasks().get(key).getName());
-            System.out.print(" - " + manager.getAllTasks().get(key).getTaskId());
+        for (Task task : manager.getAllTasks()) {
+            System.out.print("[" + task.getStatus() + "] ");
+            System.out.print(task.getName());
+            System.out.print(" - " + task.getTaskId());
             System.out.println();
         }
 
         System.out.println("\nЭпики и их подзадачи:");
         System.out.println("-------------------------");
-        for (Integer key : manager.getAllEpics().keySet()) {
-            System.out.print("[" + manager.getAllEpics().get(key).getStatus() + "] ");
-            System.out.print(manager.getAllEpics().get(key).getName());
-            System.out.print(" - " + manager.getAllEpics().get(key).getTaskId());
-            System.out.print(" -> " + manager.getAllEpics().get(key).getSubtasks().keySet());
+        for (Epic epic : manager.getAllEpics()) {
+            System.out.print("[" + epic.getStatus() + "] ");
+            System.out.print(epic.getName());
+            System.out.print(" - " + epic.getTaskId());
+            System.out.print(" -> " + epic.getSubtasks().keySet());
             System.out.println();
         }
 
         System.out.println("\nПодзадачи и их эпики:");
         System.out.println("-------------------------");
-        for (Integer key : manager.getAllSubtasks().keySet()) {
-            System.out.print("[" + manager.getAllSubtasks().get(key).getStatus() + "] ");
-            System.out.print(manager.getAllSubtasks().get(key).getName());
-            System.out.print(" - " + manager.getAllSubtasks().get(key).getTaskId());
-            System.out.print(" -> " + manager.getAllSubtasks().get(key).getEpicId());
+        for (Subtask subtask : manager.getAllSubtasks()) {
+            System.out.print("[" + subtask.getStatus() + "] ");
+            System.out.print(subtask.getName());
+            System.out.print(" - " + subtask.getTaskId());
+            System.out.print(" -> " + subtask.getEpicId());
             System.out.println();
         }
     }

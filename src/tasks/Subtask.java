@@ -1,4 +1,6 @@
-public class Subtask extends Task{
+package tasks;
+
+public class Subtask extends Task {
     private int epicId;
 
     public Subtask(Epic epic) {
@@ -13,8 +15,4 @@ public class Subtask extends Task{
         return epicId;
     }
 
-    @Override
-    public void setStatus(String status) {
-        super.status = status;
-    }
 }
