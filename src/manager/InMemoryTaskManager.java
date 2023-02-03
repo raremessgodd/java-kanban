@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getHistory(){
         return history;
-    };
+    }
 
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(allTasks.values());
@@ -163,19 +163,19 @@ public class InMemoryTaskManager implements TaskManager {
         int doneStatus = 0;
 
         for (Subtask subtasks : epic.getSubtasks().values()) {
-            if (subtasks.getStatus().equals("DONE")) {
+            if (subtasks.getStatus() == Status.DONE) {
                 doneStatus++;
-            } else if (subtasks.getStatus().equals("NEW")) {
+            } else if (subtasks.getStatus() == Status.NEW) {
                 newStatus++;
             }
         }
 
         if (newStatus == epic.getSubtasks().size() || epic.getSubtasks().isEmpty()) {
-            epic.setStatus("NEW");
+            epic.setStatus(Status.NEW);
         } else if (doneStatus == epic.getSubtasks().size()) {
-            epic.setStatus("DONE");
+            epic.setStatus(Status.DONE);
         } else {
-            epic.setStatus("IN_PROGRESS");
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 }

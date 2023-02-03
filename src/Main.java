@@ -10,37 +10,37 @@ public class Main {
 
         Task task1 = new Task();
         task1.setName("Сходить в зал");
-        task1.setStatus("NEW");
+        task1.setStatus(Status.NEW);
         manager.createTask(task1);
 
         Task task2 = new Task();
         task2.setName("Поиграть на гитаре");
-        task2.setStatus("NEW");
+        task2.setStatus(Status.NEW);
         manager.createTask(task2);
 
         Epic epic = new Epic();
         epic.setName("Выучить язык Java");
-        epic.setStatus("NEW");
+        epic.setStatus(Status.NEW);
         manager.createEpic(epic);
 
         Epic epic2 = new Epic();
         epic2.setName("Завести собаку");
-        epic2.setStatus("NEW");
+        epic2.setStatus(Status.NEW);
         manager.createEpic(epic2);
 
         Subtask subtask1 = new Subtask(epic);
         subtask1.setName("Закончить обучение на практикуме");
-        subtask1.setStatus("NEW");
+        subtask1.setStatus(Status.NEW);
         manager.createSubtask(subtask1);
 
         Subtask subtask2 = new Subtask(epic);
         subtask2.setName("Заниматься самостоятельно");
-        subtask2.setStatus("NEW");
+        subtask2.setStatus(Status.NEW);
         manager.createSubtask(subtask2);
 
         Subtask subtask3 = new Subtask(epic2);
         subtask3.setName("Накопить денег");
-        subtask3.setStatus("NEW");
+        subtask3.setStatus(Status.NEW);
         manager.createSubtask(subtask3);
 
         printInformation(manager);
@@ -76,7 +76,7 @@ public class Main {
                 System.out.println("Введите индекс:");
                 int id = scanner.nextInt();
                 System.out.println("Введите статус:");
-                String status = scanner.next();
+                Status status = Status.valueOf(scanner.next());
                 switch (type) {
                     case ("Task"):
                         manager.getTaskById(id).setStatus(status);
