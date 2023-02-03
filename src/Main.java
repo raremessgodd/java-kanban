@@ -1,4 +1,4 @@
-import manager.Manager;
+import manager.InMemoryTaskManager;
 import java.util.Scanner;
 import tasks.*;
 
@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Manager manager = new Manager();
+        InMemoryTaskManager manager = new InMemoryTaskManager();
 
         Task task1 = new Task();
         task1.setName("Сходить в зал");
@@ -101,10 +101,10 @@ public class Main {
         }
     }
 
-    public static void printInformation (Manager manager) {
+    public static void printInformation (InMemoryTaskManager InMemoryTaskManager) {
         System.out.println("\nОбычные задачи:");
         System.out.println("------------------");
-        for (Task task : manager.getAllTasks()) {
+        for (Task task : InMemoryTaskManager.getAllTasks()) {
             System.out.print("[" + task.getStatus() + "] ");
             System.out.print(task.getName());
             System.out.print(" - " + task.getTaskId());
@@ -113,7 +113,7 @@ public class Main {
 
         System.out.println("\nЭпики и их подзадачи:");
         System.out.println("-------------------------");
-        for (Epic epic : manager.getAllEpics()) {
+        for (Epic epic : InMemoryTaskManager.getAllEpics()) {
             System.out.print("[" + epic.getStatus() + "] ");
             System.out.print(epic.getName());
             System.out.print(" - " + epic.getTaskId());
@@ -123,7 +123,7 @@ public class Main {
 
         System.out.println("\nПодзадачи и их эпики:");
         System.out.println("-------------------------");
-        for (Subtask subtask : manager.getAllSubtasks()) {
+        for (Subtask subtask : InMemoryTaskManager.getAllSubtasks()) {
             System.out.print("[" + subtask.getStatus() + "] ");
             System.out.print(subtask.getName());
             System.out.print(" - " + subtask.getTaskId());
