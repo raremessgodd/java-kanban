@@ -6,6 +6,7 @@ public class Task {
     private String description;
     protected Status status;
 
+
     public String getName() {
         return name;
     }
@@ -13,8 +14,6 @@ public class Task {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public int getTaskId() {
         return taskId;

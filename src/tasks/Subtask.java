@@ -7,7 +7,7 @@ public class Subtask extends Task {
         this.epicId = epic.getTaskId();
     }
 
-    public void setThisEpic(Epic thisEpic) {
+    public void setEpicId(Epic thisEpic) {
         this.epicId = thisEpic.getTaskId();
     }
 

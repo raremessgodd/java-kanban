@@ -107,7 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById (int id) {
-        if (history.getHistory().size() <= 10) {
+        if (history.getHistory().size() < 10) {
             history.add(allTasks.get(id));
         } else {
             history.remove(0);
@@ -118,7 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById (int id) {
-        if (history.getHistory().size() <= 10) {
+        if (history.getHistory().size() < 10) {
             history.add(allEpics.get(id));
         } else {
             history.remove(0);
@@ -129,7 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById (int id) {
-        if (history.getHistory().size() <= 10) {
+        if (history.getHistory().size() < 10) {
             history.add(allSubtasks.get(id));
         } else {
             history.remove(0);
@@ -148,7 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void  updateEpic (Epic newEpic, int id) {
         newEpic.setTaskId(id);
         for (Subtask subtask : allEpics.get(id).getSubtasks().values()) {
-            subtask.setThisEpic(newEpic);
+            subtask.setEpicId(newEpic);
             newEpic.addSubtask(subtask);
         }
         allEpics.put(newEpic.getTaskId(), newEpic);

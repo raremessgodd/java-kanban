@@ -90,9 +90,13 @@ public class Main {
                         printInformation(manager);
                         break;
                     case ("Subtask"):
-                        manager.getSubtaskById(id).setStatus(status);
-                        int epicId = manager.getSubtaskById(id).getEpicId();
-                        manager.updateEpicStatus(manager.getEpicById(epicId));
+                        Subtask subtask =  manager.getSubtaskById(id);
+                        subtask.setStatus(status);
+                        for (Epic epics: manager.getAllEpics()) {
+                            if (epics.getTaskId() == subtask.getEpicId()) {
+                                manager.updateEpicStatus(epics);
+                            }
+                        }
                         printInformation(manager);
                         break;
                     default:
