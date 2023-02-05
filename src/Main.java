@@ -1,12 +1,14 @@
-import manager.InMemoryTaskManager;
+import managers.Managers;
 import java.util.Scanner;
+
+import taskManager.TaskManager;
 import tasks.*;
 
 public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task();
         task1.setName("Сходить в зал");
@@ -47,7 +49,8 @@ public class Main {
 
         while (true) {
             System.out.println("\n1 - Удалить задачу по индексу." +
-                    "     2 - Изменить статус задачи по индексу.");
+                    "     2 - Изменить статус задачи по индексу." +
+                    "     3 - Помотреть историю просмотров.");
             int test = scanner.nextInt();
             if (test == 1) {
                 System.out.println("Какой тип задачи вы хотите удалить?");
@@ -95,13 +98,15 @@ public class Main {
                     default:
                         System.out.println("Неверный тип задачи.");
                 }
+            } else if (test == 3) {
+                System.out.println(manager.getHistory().toString());
             } else {
                 break;
             }
         }
     }
 
-    public static void printInformation (InMemoryTaskManager InMemoryTaskManager) {
+    public static void printInformation (TaskManager InMemoryTaskManager) {
         System.out.println("\nОбычные задачи:");
         System.out.println("------------------");
         for (Task task : InMemoryTaskManager.getAllTasks()) {

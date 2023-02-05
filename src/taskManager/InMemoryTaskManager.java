@@ -1,14 +1,17 @@
-package manager;
+package taskManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import managers.Managers;
 import tasks.*;
+import historyManager.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
     int id = 1;
 
-    private final ArrayList<Task> history = new ArrayList<>();
+    private final HistoryManager history = Managers.getDefaultHistory();
     private final HashMap<Integer, Task> allTasks = new HashMap<>();
     private final HashMap<Integer, Subtask> allSubtasks = new HashMap<>();
     private final HashMap<Integer, Epic> allEpics = new HashMap<>();
@@ -19,7 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getHistory(){
-        return history;
+        return history.getHistory();
     }
 
     public ArrayList<Task> getAllTasks() {
@@ -104,30 +107,33 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById (int id) {
-        if (history.size() <= 10) {
+        if (history.getHistory().size() <= 10) {
             history.add(allTasks.get(id));
         } else {
-            history.add(0, allTasks.get(id));
+            history.remove(0);
+            history.add(allTasks.get(id));
         }
         return allTasks.get(id);
     }
 
     @Override
     public Epic getEpicById (int id) {
-        if (history.size() <= 10) {
-            history.add(allTasks.get(id));
+        if (history.getHistory().size() <= 10) {
+            history.add(allEpics.get(id));
         } else {
-            history.add(0, allTasks.get(id));
+            history.remove(0);
+            history.add(allEpics.get(id));
         }
         return allEpics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById (int id) {
-        if (history.size() <= 10) {
-            history.add(allTasks.get(id));
+        if (history.getHistory().size() <= 10) {
+            history.add(allSubtasks.get(id));
         } else {
-            history.add(0, allTasks.get(id));
+            history.remove(0);
+            history.add(allSubtasks.get(id));
         }
         return allSubtasks.get(id);
     }
