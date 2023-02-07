@@ -1,7 +1,7 @@
 import managers.Managers;
 import java.util.Scanner;
 
-import taskManager.TaskManager;
+import managers.TaskManager;
 import tasks.*;
 
 public class Main {

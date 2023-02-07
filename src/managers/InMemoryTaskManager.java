@@ -1,11 +1,9 @@
-package taskManager;
+package managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import managers.Managers;
 import tasks.*;
-import historyManager.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -107,34 +105,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById (int id) {
-        if (history.getHistory().size() < 10) {
-            history.add(allTasks.get(id));
-        } else {
-            history.remove(0);
-            history.add(allTasks.get(id));
-        }
+        history.add(allTasks.get(id));
         return allTasks.get(id);
     }
 
     @Override
     public Epic getEpicById (int id) {
-        if (history.getHistory().size() < 10) {
-            history.add(allEpics.get(id));
-        } else {
-            history.remove(0);
-            history.add(allEpics.get(id));
-        }
+        history.add(allEpics.get(id));
         return allEpics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById (int id) {
-        if (history.getHistory().size() < 10) {
-            history.add(allSubtasks.get(id));
-        } else {
-            history.remove(0);
-            history.add(allSubtasks.get(id));
-        }
+        history.add(allSubtasks.get(id));
         return allSubtasks.get(id);
     }
 
