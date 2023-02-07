@@ -19,22 +19,27 @@ public class InMemoryTaskManager implements TaskManager {
         return id++;
     }
 
+    @Override
     public LinkedList<Task> getHistory(){
         return history.getHistory();
     }
 
+    @Override
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(allTasks.values());
     }
 
+    @Override
     public ArrayList<Subtask> getAllSubtasks() {
         return new ArrayList<>(allSubtasks.values());
     }
 
+    @Override
     public ArrayList<Epic> getAllEpics() {
         return new ArrayList<>(allEpics.values());
     }
 
+    @Override
     public ArrayList<Subtask> getEpicSubtasks(int epicId) {
         return new ArrayList<>(allEpics.get(epicId).getSubtasks().values());
     }
