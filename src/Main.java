@@ -20,22 +20,22 @@ public class Main {
         task2.setStatus(Status.NEW);
         manager.createTask(task2);
 
-        Epic epic = new Epic();
-        epic.setName("Выучить язык Java");
-        epic.setStatus(Status.NEW);
-        manager.createEpic(epic);
+        Epic epic1 = new Epic();
+        epic1.setName("Выучить язык Java");
+        epic1.setStatus(Status.NEW);
+        manager.createEpic(epic1);
 
         Epic epic2 = new Epic();
         epic2.setName("Завести собаку");
         epic2.setStatus(Status.NEW);
         manager.createEpic(epic2);
 
-        Subtask subtask1 = new Subtask(epic);
+        Subtask subtask1 = new Subtask(epic1);
         subtask1.setName("Закончить обучение на практикуме");
         subtask1.setStatus(Status.NEW);
         manager.createSubtask(subtask1);
 
-        Subtask subtask2 = new Subtask(epic);
+        Subtask subtask2 = new Subtask(epic1);
         subtask2.setName("Заниматься самостоятельно");
         subtask2.setStatus(Status.NEW);
         manager.createSubtask(subtask2);
