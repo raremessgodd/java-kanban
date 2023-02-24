@@ -31,16 +31,16 @@ public class Main {
         manager.createSubtask(subtask2);
 
         Subtask subtask3 = new Subtask(epic1);
-        subtask3.setName("Накопить денег");
+        subtask3.setName("Закончить ВУЗ");
         subtask3.setStatus(Status.NEW);
         manager.createSubtask(subtask3);
 
         printInformation(manager);
 
         while (true) {
-            System.out.println("\n1 - Просмотреть epic1." +
-                    "     2 - Просмотреть epic1." +
-                    "     3 - Удалить задачу по ID." +
+            System.out.println("\n1 - Просмотреть Epic1." +
+                    "     2 - Просмотреть Epic2." +
+                    "     3 - Удалить эпик по ID." +
                     "     4 - Посмотреть историю просмотров.");
             int test = scanner.nextInt();
             if (test == 1) {
@@ -55,7 +55,9 @@ public class Main {
                 manager.deleteEpicById(id);
                 printInformation(manager);
             } else if (test == 4) {
-                System.out.println(manager.getHistory().toString());
+                for (Task task : manager.getHistory()) {
+                    System.out.println(task.getTaskId() + ". " + task.getName());
+                }
             } else {
                 break;
             }
@@ -63,14 +65,6 @@ public class Main {
     }
 
     public static void printInformation (TaskManager InMemoryTaskManager) {
-        System.out.println("\nОбычные задачи:");
-        System.out.println("------------------");
-        for (Task task : InMemoryTaskManager.getAllTasks()) {
-            System.out.print("[" + task.getStatus() + "] ");
-            System.out.print(task.getName());
-            System.out.print(" - " + task.getTaskId());
-            System.out.println();
-        }
 
         System.out.println("\nЭпики и их подзадачи:");
         System.out.println("-------------------------");
