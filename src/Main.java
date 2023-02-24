@@ -10,16 +10,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         TaskManager manager = Managers.getDefault();
 
-        Task task1 = new Task();
-        task1.setName("Сходить в зал");
-        task1.setStatus(Status.NEW);
-        manager.createTask(task1);
-
-        Task task2 = new Task();
-        task2.setName("Поиграть на гитаре");
-        task2.setStatus(Status.NEW);
-        manager.createTask(task2);
-
         Epic epic1 = new Epic();
         epic1.setName("Выучить язык Java");
         epic1.setStatus(Status.NEW);
@@ -40,7 +30,7 @@ public class Main {
         subtask2.setStatus(Status.NEW);
         manager.createSubtask(subtask2);
 
-        Subtask subtask3 = new Subtask(epic2);
+        Subtask subtask3 = new Subtask(epic1);
         subtask3.setName("Накопить денег");
         subtask3.setStatus(Status.NEW);
         manager.createSubtask(subtask3);
@@ -48,61 +38,23 @@ public class Main {
         printInformation(manager);
 
         while (true) {
-            System.out.println("\n1 - Удалить задачу по индексу." +
-                    "     2 - Изменить статус задачи по индексу." +
-                    "     3 - Помотреть историю просмотров.");
+            System.out.println("\n1 - Просмотреть epic1." +
+                    "     2 - Просмотреть epic1." +
+                    "     3 - Удалить задачу по ID." +
+                    "     4 - Посмотреть историю просмотров.");
             int test = scanner.nextInt();
             if (test == 1) {
-                System.out.println("Какой тип задачи вы хотите удалить?");
-                String type = scanner.next();
-                System.out.println("Введите индекс:");
-                int id = scanner.nextInt();
-                switch (type) {
-                    case ("Task"):
-                        manager.deleteTaskById(id);
-                        printInformation(manager);
-                        break;
-                    case ("Epic"):
-                        manager.deleteEpicById(id);
-                        printInformation(manager);
-                        break;
-                    case ("Subtask"):
-                        manager.deleteSubtaskById(id);
-                        printInformation(manager);
-                        break;
-                    default:
-                        System.out.println("Неверный тип задачи.");
-                }
+                manager.getEpicById(1);
+                System.out.println("Epic1 просмотрен.");
             } else if (test == 2) {
-                System.out.println("Статус какого типа задачи вы хотите изменить?");
-                String type = scanner.next();
+                manager.getEpicById(2);
+                System.out.println("Epic2 просмотрен.");
+            } else if (test == 3) {
                 System.out.println("Введите индекс:");
                 int id = scanner.nextInt();
-                System.out.println("Введите статус:");
-                Status status = Status.valueOf(scanner.next());
-                switch (type) {
-                    case ("Task"):
-                        manager.getTaskById(id).setStatus(status);
-                        printInformation(manager);
-                        break;
-                    case ("Epic"):
-                        manager.getEpicById(id).setStatus(status);
-                        printInformation(manager);
-                        break;
-                    case ("Subtask"):
-                        Subtask subtask =  manager.getSubtaskById(id);
-                        subtask.setStatus(status);
-                        for (Epic epics: manager.getAllEpics()) {
-                            if (epics.getTaskId() == subtask.getEpicId()) {
-                                manager.updateEpicStatus(epics);
-                            }
-                        }
-                        printInformation(manager);
-                        break;
-                    default:
-                        System.out.println("Неверный тип задачи.");
-                }
-            } else if (test == 3) {
+                manager.deleteEpicById(id);
+                printInformation(manager);
+            } else if (test == 4) {
                 System.out.println(manager.getHistory().toString());
             } else {
                 break;

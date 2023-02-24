@@ -1,7 +1,6 @@
 package managers;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.HashMap;
 
 import tasks.*;
@@ -20,8 +19,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public LinkedList<Task> getHistory(){
-        return history.getHistory();
+    public ArrayList<Task> getHistory(){
+        return history.getTasks();
     }
 
     @Override
@@ -110,19 +109,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById (int id) {
-        history.add(allTasks.get(id));
+        history.linkLast(allTasks.get(id));
+
         return allTasks.get(id);
     }
 
     @Override
     public Epic getEpicById (int id) {
-        history.add(allEpics.get(id));
+        history.linkLast(allEpics.get(id));
+        for (Subtask subtask : allEpics.get(id).getSubtasks().values()) {
+            history.linkLast(subtask);
+        }
+
         return allEpics.get(id);
     }
 
     @Override
     public Subtask getSubtaskById (int id) {
-        history.add(allSubtasks.get(id));
+        history.linkLast(allEpics.get(allSubtasks.get(id).getEpicId()));
+        history.linkLast(allSubtasks.get(id));
+
         return allSubtasks.get(id);
     }
 
