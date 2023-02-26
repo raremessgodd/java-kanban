@@ -7,7 +7,7 @@ import tasks.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    int id = 1;
+    private int id = 1;
 
     private final HistoryManager history = Managers.getDefaultHistory();
     private final HashMap<Integer, Task> allTasks = new HashMap<>();
