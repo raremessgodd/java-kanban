@@ -1,5 +1,4 @@
 import managers.Managers;
-import java.util.Scanner;
 
 import managers.TaskManager;
 import tasks.*;
@@ -7,7 +6,6 @@ import tasks.*;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task();
@@ -47,50 +45,25 @@ public class Main {
 
         printInformation(manager);
 
-        while (true) {
-            System.out.println("\n1 - Просмотреть задачу по ID." +
-                    "     2 - Удалить задачу по ID." +
-                    "     3 - Посмотреть историю просмотров.");
-            int test = scanner.nextInt();
+        manager.getEpicById(epic2.getTaskId());
+        manager.getTaskById(task1.getTaskId());
+        manager.getEpicById(epic1.getTaskId());
+        manager.getTaskById(task2.getTaskId());
+        manager.getTaskById(task1.getTaskId());
+        manager.getEpicById(epic2.getTaskId());
+        manager.getEpicById(epic2.getTaskId());
+        manager.getEpicById(epic1.getTaskId());
 
-            if (test == 1) {
-                System.out.println("Какой тип задачи вы хотите просмотреть?");
-                String type = scanner.next();
-                System.out.println("Введите индекс:");
-                int id = scanner.nextInt();
+        System.out.println("\nПервый тест: ");
+        for (Task task: manager.getHistory()) {
+            System.out.println(task.getTaskId() + ". " + task.getName());
+        }
 
-                switch (type) {
-                    case ("Task"):
-                        manager.getTaskById(id);
-                        System.out.println("Задача №" + id + " просмотрена.");
-                        break;
-                    case ("Epic"):
-                        manager.getEpicById(id);
-                        System.out.println("Эпип №" + id + " просмотрен.");
-                        break;
-                    case ("Subtask"):
-                        manager.getSubtaskById(id);
-                        System.out.println("Подзадача №" + id + " просмотрена.");
-                        break;
-                    default:
-                        System.out.println("Неверный тип задачи.");
-                }
-            }
-            else if (test == 2) {
-                System.out.println("Введите индекс:");
-                int id = scanner.nextInt();
+        manager.deleteEpicById(epic1.getTaskId());
 
-                manager.deleteEpicById(id);
-                printInformation(manager);
-            }
-            else if (test == 3) {
-                for (Task task : manager.getHistory()) {
-                    System.out.println(task.getTaskId() + ". " + task.getName());
-                }
-            }
-            else {
-                break;
-            }
+        System.out.println("\nВторой тест: ");
+        for (Task task: manager.getHistory()) {
+            System.out.println(task.getTaskId() + ". " + task.getName());
         }
     }
 

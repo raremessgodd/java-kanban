@@ -12,13 +12,14 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void linkLast(Task task) {
-        final Node oldNode = tail;
-        final Node newNode = new Node(oldNode, task, null);
-        tail = newNode;
 
         if (history.containsKey(task.getTaskId())) {
             removeNode(history.get(task.getTaskId()));
         }
+
+        final Node oldNode = tail;
+        final Node newNode = new Node(oldNode, task, null);
+        tail = newNode;
 
         if (oldNode == null){
             head = newNode;
@@ -39,14 +40,14 @@ public class InMemoryHistoryManager implements HistoryManager {
             head = nextNode;
         } else {
             prevNode.next = nextNode;
-            node.next = null;
+            node.prev = null;
         }
 
         if (nextNode == null) {
             tail = prevNode;
         } else {
             nextNode.prev = prevNode;
-            node.prev = null;
+            node.next = null;
         }
 
         history.remove(node.task.getTaskId());
