@@ -4,6 +4,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final HashMap<Integer, Node> history = new HashMap<>();
@@ -74,5 +75,25 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
+    static String historyToString (HistoryManager manager) {
+        StringBuilder values = new StringBuilder();
 
+        for (Task task : manager.getTasks()) {
+            values.append(task.getTaskId()).append(",");
+        }
+
+        return values.toString();
+    }
+
+    static List<Integer> historyFromString (String value) {
+        String[] values = value.split(",");
+        List<Integer> history = new ArrayList<>();
+
+        for (String id : values) {
+            history.add(Integer.parseInt(id));
+        }
+
+        return history;
+    }
+    
 }
