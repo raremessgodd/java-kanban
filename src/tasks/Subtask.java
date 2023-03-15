@@ -3,8 +3,8 @@ package tasks;
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask(Epic epic) {
-        this.epicId = epic.getTaskId();
+    public Subtask(int epicId) {
+        this.epicId = epicId;
     }
 
     public void setEpicId(Epic thisEpic) {

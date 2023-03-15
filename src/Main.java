@@ -28,17 +28,17 @@ public class Main {
         epic2.setStatus(Status.NEW);
         manager.createEpic(epic2);
 
-        Subtask subtask1 = new Subtask(epic1);
+        Subtask subtask1 = new Subtask(epic1.getTaskId());
         subtask1.setName("Закончить обучение на практикуме");
         subtask1.setStatus(Status.NEW);
         manager.createSubtask(subtask1);
 
-        Subtask subtask2 = new Subtask(epic1);
+        Subtask subtask2 = new Subtask(epic1.getTaskId());
         subtask2.setName("Заниматься самостоятельно");
         subtask2.setStatus(Status.NEW);
         manager.createSubtask(subtask2);
 
-        Subtask subtask3 = new Subtask(epic1);
+        Subtask subtask3 = new Subtask(epic1.getTaskId());
         subtask3.setName("Закончить ВУЗ");
         subtask3.setStatus(Status.NEW);
         manager.createSubtask(subtask3);
