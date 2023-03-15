@@ -1,4 +1,4 @@
-package managers;
+package managers.history;
 
 import tasks.Task;
 
@@ -74,4 +74,5 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
+    
 }

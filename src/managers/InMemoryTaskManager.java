@@ -3,6 +3,7 @@ package managers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import managers.history.HistoryManager;
 import tasks.*;
 
 

@@ -20,4 +20,9 @@ public class Epic extends Task {
     public void removeSubtask(int id) {
         subtasks.remove(id);
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + subtasks.keySet() + ",";
+    }
 }

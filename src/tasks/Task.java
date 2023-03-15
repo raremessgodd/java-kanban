@@ -38,4 +38,10 @@ public class Task {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return (taskId + "," + TaskTypes.valueOf(this.getClass().toString().toUpperCase()) +
+                "," + name + "," + status + "," + description + ",");
+    }
 }
