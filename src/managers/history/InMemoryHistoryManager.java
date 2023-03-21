@@ -75,7 +75,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
-    static String historyToString (HistoryManager manager) {
+    public static String historyToString (HistoryManager manager) {
         StringBuilder values = new StringBuilder();
 
         for (Task task : manager.getTasks()) {
@@ -85,7 +85,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return values.toString();
     }
 
-    static List<Integer> historyFromString (String value) {
+    public static List<Integer> historyFromString (String value) {
         String[] values = value.split(",");
         List<Integer> history = new ArrayList<>();
 
@@ -95,5 +95,5 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         return history;
     }
-    
+
 }

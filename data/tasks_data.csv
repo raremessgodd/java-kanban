@@ -1,1 +1,10 @@
-id,type,name,status,description,epic
+id,type,name,status,description,epic,
+1,TASK,Сходить в зал,NEW,null,
+2,TASK,Поиграть на гитаре,NEW,null,
+3,EPIC,Выучить язык Java,NEW,null,[5, 6, 7],
+4,EPIC,Завести собаку,NEW,null,[],
+5,SUBTASK,Закончить обучение на практикуме,NEW,null,3,
+6,SUBTASK,Заниматься самостоятельно,NEW,null,3,
+7,SUBTASK,Закончить ВУЗ,NEW,null,3,
+
+3,5,6,7,

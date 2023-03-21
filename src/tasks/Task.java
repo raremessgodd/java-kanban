@@ -39,9 +39,41 @@ public class Task {
         this.status = status;
     }
 
+    public TaskTypes getType () {
+        return TaskTypes.valueOf(this.getClass().getSimpleName().toUpperCase());
+    }
+
     @Override
     public String toString() {
-        return (taskId + "," + TaskTypes.valueOf(this.getClass().toString().toUpperCase()) +
+        return (taskId + "," + getType() +
                 "," + name + "," + status + "," + description + ",");
+    }
+
+    static public Task fromString(String value) {
+
+        String[] values = value.split(",");
+
+        Task task;
+
+        switch (TaskTypes.valueOf(values[1])) {
+            case EPIC:
+                task = new Epic();
+                break;
+            case SUBTASK:
+                task = new Subtask(Integer.parseInt(values[5]));
+                break;
+            case TASK:
+                task = new Task();
+                break;
+            default:
+                throw new IllegalStateException("ДОДЕЛАТЬ");
+        }
+
+        task.setTaskId(Integer.parseInt(values[0]));
+        task.setName(values[2]);
+        task.setStatus(Status.valueOf(values[3]));
+        task.setDescription(values[4]);
+
+        return task;
     }
 }

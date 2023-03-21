@@ -10,17 +10,17 @@ import tasks.*;
 public class InMemoryTaskManager implements TaskManager {
     private int id = 1;
 
-    private final HistoryManager history = Managers.getDefaultHistory();
-    private final HashMap<Integer, Task> allTasks = new HashMap<>();
-    private final HashMap<Integer, Subtask> allSubtasks = new HashMap<>();
-    private final HashMap<Integer, Epic> allEpics = new HashMap<>();
+    protected final HistoryManager history = Managers.getDefaultHistory();
+    protected final HashMap<Integer, Task> allTasks = new HashMap<>();
+    protected final HashMap<Integer, Subtask> allSubtasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> allEpics = new HashMap<>();
 
     public int setId () {
         return id++;
     }
 
     @Override
-    public ArrayList<Task> getHistory(){
+    public ArrayList<Task> getHistory() {
         return history.getTasks();
     }
 
