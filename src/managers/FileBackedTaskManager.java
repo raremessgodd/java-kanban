@@ -13,7 +13,7 @@ import static managers.history.InMemoryHistoryManager.*;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
-        FileBackedTaskManager manager1 = new FileBackedTaskManager("data/tasks_data.csv");
+        TaskManager manager1 = Managers.getDefault();
 
         Task task1 = new Task();
         task1.setName("Сходить в зал");
@@ -66,16 +66,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
 
-        String[] tasksValues;
+        List<String> tasksValues;
         try {
-            tasksValues = Files.readString(Paths.get(manager.path)).split("\n");
+            tasksValues = Files.readAllLines(Paths.get(manager.path));
         } catch (IOException e) {
             throw new ManagerSaveException("Неверный путь к файлу.");
         }
 
-        for (int i = 1; i < tasksValues.length - 2; i++) {
+        for (int i = 1; i < tasksValues.size() - 1; i++) {
 
-            Task task = Task.fromString(tasksValues[i]);
+            Task task = Task.fromString(tasksValues.get(i));
 
             switch (task.getType()) {
                 case TASK:
@@ -94,7 +94,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             manager.allEpics.get(subtask.getEpicId()).addSubtask(subtask);
         }
 
-        List<Integer> splitHistory = historyFromString(tasksValues[tasksValues.length - 1]);
+        List<Integer> splitHistory = historyFromString(tasksValues.get(tasksValues.size() - 1));
         for (int id: splitHistory) {
             if (manager.allTasks.containsKey(id)) {
                 manager.history.linkLast(manager.allTasks.get(id));
@@ -116,21 +116,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try (Writer writer = Files.newBufferedWriter(Paths.get(path))) {
 
-            writer.write("id,type,name,status,description,epic," + "\n");
+            writer.write("id,type,name,status,description,epic," + System.lineSeparator());
 
             for (Task task : allTasks.values()) {
-                writer.write(task.toString() + "\n");
+                writer.write(task.toString() + System.lineSeparator());
             }
 
             for (Epic epic : allEpics.values()) {
-                writer.write(epic.toString() + "\n");
+                writer.write(epic.toString() + System.lineSeparator());
             }
 
             for (Subtask subtask : allSubtasks.values()) {
-                writer.write(subtask.toString() + "\n");
+                writer.write(subtask.toString() + System.lineSeparator());
             }
 
-            writer.write("\n");
+            writer.write(System.lineSeparator());
 
             writer.write(historyToString(history));
             if (history.getTasks().isEmpty()) {
@@ -138,7 +138,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Указан неверный путь к файлу.");
+            throw new ManagerSaveException("Указан неверный путь к файлу.", e);
         }
     }
 
