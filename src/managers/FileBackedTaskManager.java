@@ -62,7 +62,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final String path;
 
-    public static FileBackedTaskManager loadFromFile (File file) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile (File file) {
 
         FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
 
@@ -70,10 +70,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             tasksValues = Files.readAllLines(Paths.get(manager.path));
         } catch (IOException e) {
-            throw new ManagerSaveException("Неверный путь к файлу.");
+            throw new ManagerSaveException("Указан неверный путь к файлу: " + e.getMessage());
         }
 
         for (int i = 1; i < tasksValues.size() - 1; i++) {
+
+            if (tasksValues.get(i).isEmpty()){
+                continue;
+            }
 
             Task task = Task.fromString(tasksValues.get(i));
 
@@ -138,7 +142,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Указан неверный путь к файлу.", e);
+            throw new ManagerSaveException("Указан неверный путь к файлу: ", e);
         }
     }
 
