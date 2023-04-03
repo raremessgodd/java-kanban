@@ -1,11 +1,39 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+
 public class Task {
     private String name;
     private int taskId;
     private String description;
     protected Status status;
+    private ZonedDateTime startTime;
+    private Duration duration;
 
+    public Task() {
+        startTime = ZonedDateTime.now();
+    }
+
+    public ZonedDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public ZonedDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(ZonedDateTime startTime) {
+        this.startTime = startTime;
+    }
 
     public String getName() {
         return name;
