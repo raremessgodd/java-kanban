@@ -1,11 +1,10 @@
 package managers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
+import exceptions.EqualTimeException;
 import managers.history.HistoryManager;
 import tasks.*;
-
 
 public class InMemoryTaskManager implements TaskManager {
     private int id = 1;
@@ -14,9 +13,26 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> allTasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> allSubtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> allEpics = new HashMap<>();
+    protected final Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public int setId () {
         return id++;
+    }
+
+    public Set<Task> getPrioritizedTasks() {
+        prioritizedTasks.addAll(allTasks.values());
+        prioritizedTasks.addAll(allSubtasks.values());
+        return prioritizedTasks;
+    }
+
+    public void checkIntersection(Task other) throws EqualTimeException {
+        for (Task task: getPrioritizedTasks()) {
+            if (!other.getStartTime().isAfter(task.getEndTime()) &&
+                    !other.getEndTime().isBefore(task.getStartTime())) {
+                throw new EqualTimeException("Две задачи пересекаются по времени: id." +
+                        task.getTaskId() + " - id." + other.getTaskId());
+            }
+        }
     }
 
     @Override
@@ -47,6 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createTask (Task task) {
         task.setTaskId(setId());
+        checkIntersection(task);
         allTasks.put(task.getTaskId(), task);
     }
 
@@ -59,6 +76,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createSubtask (Subtask subtask) {
         subtask.setTaskId(setId());
+        checkIntersection(subtask);
         allSubtasks.put(subtask.getTaskId(), subtask);
         allEpics.get(subtask.getEpicId()).addSubtask(subtask);
         updateEpicStatus(allEpics.get(subtask.getEpicId()));
@@ -102,12 +120,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtaskById (int id) {
-        for (Epic epic : allEpics.values()) {
-            if (epic.getTaskId() == allSubtasks.get(id).getEpicId()) {
-                epic.removeSubtask(id);
-                updateEpicStatus(allEpics.get(epic.getTaskId()));
-            }
-        }
+        Subtask subtask = allSubtasks.get(id);
+        allEpics.get(subtask.getEpicId()).removeSubtask(subtask);
+        updateEpicStatus(allEpics.get(subtask.getEpicId()));
         history.removeById(id);
         allSubtasks.remove(id);
     }
@@ -115,7 +130,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById (int id) {
         history.linkLast(allTasks.get(id));
-
         return allTasks.get(id);
     }
 
@@ -125,7 +139,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (Subtask subtask : allEpics.get(id).getSubtasks().values()) {
             history.linkLast(subtask);
         }
-
         return allEpics.get(id);
     }
 
@@ -133,21 +146,21 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtaskById (int id) {
         history.linkLast(allEpics.get(allSubtasks.get(id).getEpicId()));
         history.linkLast(allSubtasks.get(id));
-
         return allSubtasks.get(id);
     }
 
     @Override
     public void updateTask (Task newTask, int id) {
         newTask.setTaskId(id);
+        checkIntersection(newTask);
         allTasks.put(newTask.getTaskId(), newTask);
     }
 
     @Override
-    public void  updateEpic (Epic newEpic, int id) {
+    public void updateEpic (Epic newEpic, int id) {
         newEpic.setTaskId(id);
         for (Subtask subtask : allEpics.get(id).getSubtasks().values()) {
-            subtask.setEpicId(newEpic);
+            subtask.setEpicId(newEpic.getTaskId());
             newEpic.addSubtask(subtask);
         }
         allEpics.put(newEpic.getTaskId(), newEpic);
@@ -157,8 +170,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask (Subtask newSubtask, int id) {
         newSubtask.setTaskId(id);
-        allSubtasks.put(newSubtask.getTaskId(), newSubtask);
+        checkIntersection(newSubtask);
+        allEpics.get(newSubtask.getEpicId()).removeSubtask(allSubtasks.get(id));
         allEpics.get(newSubtask.getEpicId()).addSubtask(newSubtask);
+        allSubtasks.put(newSubtask.getTaskId(), newSubtask);
         updateEpicStatus(allEpics.get(newSubtask.getEpicId()));
     }
 

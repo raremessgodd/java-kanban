@@ -1,11 +1,34 @@
 package managers;
 
-import managers.TaskManager;
 import tasks.*;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) {
+        TaskManager manager = Managers.getDefault();
+
+        Epic epic1 = new Epic();
+        epic1.setTaskId(1);
+        Subtask subtask1 = new Subtask(epic1.getTaskId());
+        Subtask subtask2 = new Subtask(epic1.getTaskId());
+
+        manager.createEpic(epic1);
+
+        subtask1.setStartTime(LocalDateTime.now().plusDays(10));
+        subtask1.setDuration(Duration.ofHours(50));
+        subtask1.setStatus(Status.DONE);
+        manager.createSubtask(subtask1);
+
+        subtask2.setStartTime(LocalDateTime.now().plusDays(20));
+        subtask2.setDuration(Duration.ofHours(10));
+        subtask2.setStatus(Status.IN_PROGRESS);
+        manager.createSubtask(subtask2);
+
+        System.out.println(epic1);
+
     }
 
     public static void printInformation (TaskManager manager) {

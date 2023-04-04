@@ -1,7 +1,7 @@
 package tasks;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class Epic extends Task {
@@ -13,31 +13,35 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         if (subtasks.isEmpty()) {
-            this.setStartTime(subtask.getStartTime());
+            setStartTime(subtask.getStartTime());
         }
         subtasks.put(subtask.getTaskId(), subtask);
-        updateDuration();
+        updateDuration(subtask);
     }
 
-    public void removeSubtask(int id) {
-        subtasks.remove(id);
+    public void removeSubtask(Subtask subtask) {
+        subtasks.remove(subtask.getTaskId());
+        updateDuration(subtask);
+        if (subtasks.isEmpty()) {
+            setStartTime(null);
+        }
     }
 
-    private void updateDuration() {
-        for (Subtask subtask: subtasks.values()) {
-            Duration duration = this.getDuration();
+    private void updateDuration(Subtask subtask) {
+        Duration duration = getDuration();
+
+        if (subtasks.containsKey(subtask.getTaskId())) {
             duration = duration.plus(subtask.getDuration());
-            this.setDuration(duration);
+            setDuration(duration);
+        } else {
+            duration = duration.minus(subtask.getDuration());
+            setDuration(duration);
         }
     }
 
     @Override
-    public ZonedDateTime getEndTime() {
-        ZonedDateTime endTime = this.getStartTime();
-        for (Subtask subtask : subtasks.values()) {
-            endTime = endTime.plus(subtask.getDuration());
-        }
-        return endTime;
+    public LocalDateTime getEndTime() {
+        return getStartTime().plus(getDuration());
     }
 
     @Override

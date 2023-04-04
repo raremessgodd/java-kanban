@@ -1,21 +1,17 @@
 package tasks;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class Task {
     private String name;
     private int taskId;
-    private String description;
     protected Status status;
-    private ZonedDateTime startTime;
-    private Duration duration;
+    private LocalDateTime startTime;
+    private Duration duration = Duration.ZERO;
+    private String description;
 
-    public Task() {
-        startTime = ZonedDateTime.now();
-    }
-
-    public ZonedDateTime getEndTime() {
+    public LocalDateTime getEndTime() {
         return startTime.plus(duration);
     }
 
@@ -27,11 +23,11 @@ public class Task {
         this.duration = duration;
     }
 
-    public ZonedDateTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(ZonedDateTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -73,8 +69,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return (taskId + "," + getType() +
-                "," + name + "," + status + "," + description + ",");
+        return (taskId + "," + getType() + "," + name + "," + status + ","
+                + startTime + "," + duration + "," + description + ",");
     }
 
     static public Task fromString(String value) {
@@ -88,20 +84,27 @@ public class Task {
                 task = new Epic();
                 break;
             case SUBTASK:
-                task = new Subtask(Integer.parseInt(values[5]));
+                task = new Subtask(Integer.parseInt(values[7]));
                 break;
             case TASK:
                 task = new Task();
                 break;
             default:
-                throw new IllegalStateException("ДОДЕЛАТЬ");
+                throw new IllegalStateException();
         }
 
-        task.setTaskId(Integer.parseInt(values[0]));
-        task.setName(values[2]);
-        task.setStatus(Status.valueOf(values[3]));
-        task.setDescription(values[4]);
-
+        try {
+            task.setTaskId(Integer.parseInt(values[0]));
+            task.setName(values[2]);
+            task.setStatus(Status.valueOf(values[3]));
+            task.setDescription(values[6]);
+            if(task.getType() != TaskTypes.EPIC) {
+                task.setStartTime(LocalDateTime.parse(values[4]));
+                task.setDuration(Duration.parse(values[5]));
+            }
+        } catch (Exception e) {
+            System.out.println("Ошибка преобразования: " + e.getMessage());
+        }
         return task;
     }
 }

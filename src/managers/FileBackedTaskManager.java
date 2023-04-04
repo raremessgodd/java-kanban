@@ -12,55 +12,11 @@ import static managers.history.InMemoryHistoryManager.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    public static void main(String[] args) {
-        TaskManager manager1 = Managers.getDefault();
-
-        Task task1 = new Task();
-        task1.setName("Сходить в зал");
-        task1.setStatus(Status.NEW);
-        manager1.createTask(task1);
-
-        Task task2 = new Task();
-        task2.setName("Поиграть на гитаре");
-        task2.setStatus(Status.NEW);
-        manager1.createTask(task2);
-
-        Epic epic1 = new Epic();
-        epic1.setName("Выучить язык Java");
-        epic1.setStatus(Status.NEW);
-        manager1.createEpic(epic1);
-
-        Epic epic2 = new Epic();
-        epic2.setName("Завести собаку");
-        epic2.setStatus(Status.NEW);
-        manager1.createEpic(epic2);
-
-        Subtask subtask1 = new Subtask(epic1.getTaskId());
-        subtask1.setName("Закончить обучение на практикуме");
-        subtask1.setStatus(Status.NEW);
-        manager1.createSubtask(subtask1);
-
-        Subtask subtask2 = new Subtask(epic1.getTaskId());
-        subtask2.setName("Заниматься самостоятельно");
-        subtask2.setStatus(Status.NEW);
-        manager1.createSubtask(subtask2);
-
-        Subtask subtask3 = new Subtask(epic1.getTaskId());
-        subtask3.setName("Закончить ВУЗ");
-        subtask3.setStatus(Status.NEW);
-        manager1.createSubtask(subtask3);
-
-        System.out.println("\nТест №1:");
-        manager1.getEpicById(3);
-        Main.printInformation(manager1);
-
-        TaskManager manager2 = FileBackedTaskManager.loadFromFile(Paths.get("data/tasks_data.csv").toFile());
-
-        System.out.println("Тест 2:");
-        Main.printInformation(manager2);
-    }
-
     private final String path;
+
+    public FileBackedTaskManager(String path) {
+        this.path = path;
+    }
 
     public static FileBackedTaskManager loadFromFile (File file) {
 
@@ -112,15 +68,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    public FileBackedTaskManager(String path) {
-        this.path = path;
-    }
-
     public void save () throws ManagerSaveException {
 
         try (Writer writer = Files.newBufferedWriter(Paths.get(path))) {
 
-            writer.write("id,type,name,status,description,epic," + System.lineSeparator());
+            writer.write("id,type,name,status,startTime,duration,description,epic," + System.lineSeparator());
 
             for (Task task : allTasks.values()) {
                 writer.write(task.toString() + System.lineSeparator());
