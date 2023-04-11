@@ -96,9 +96,9 @@ public class Task {
         try {
             task.setTaskId(Integer.parseInt(values[0]));
             task.setName(values[2]);
-            task.setStatus(Status.valueOf(values[3]));
             task.setDescription(values[6]);
             if(task.getType() != TaskTypes.EPIC) {
+                task.setStatus(Status.valueOf(values[3]));
                 task.setStartTime(LocalDateTime.parse(values[4]));
                 task.setDuration(Duration.parse(values[5]));
             }

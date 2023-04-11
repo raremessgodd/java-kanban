@@ -40,7 +40,7 @@ abstract class TaskManagerTest <T extends TaskManager> {
         expectedHistory.add(0, task1);
         expectedHistory.add(1, task2);
 
-        assertArrayEquals(actualHistory.toArray(), expectedHistory.toArray());
+        assertArrayEquals(actualHistory.toArray(), expectedHistory.toArray(), "История возвращается некорректно.");
     }
 
     @Test

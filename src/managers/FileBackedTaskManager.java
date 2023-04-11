@@ -51,7 +51,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         for (Subtask subtask: manager.allSubtasks.values()) {
-            manager.allEpics.get(subtask.getEpicId()).addSubtask(subtask);
+            Epic epic = manager.allEpics.get(subtask.getEpicId());
+            epic.addSubtask(subtask);
+            manager.updateEpicStatus(epic);
         }
 
         List<Integer> splitHistory = historyFromString(tasksValues.get(tasksValues.size() - 1));
@@ -94,7 +96,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Указан неверный путь к файлу: ", e);
+            throw new ManagerSaveException("Указан неверный путь к файлу: " + path);
         }
     }
 

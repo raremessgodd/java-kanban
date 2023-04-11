@@ -2,22 +2,16 @@ package managers.history;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Subtask;
 import tasks.Task;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    HistoryManager manager;
-    Task task1, task2;
-    Epic epic1, epic2;
-    Subtask subtask1, subtask2;
+    private HistoryManager manager;
+    private Task task1, task2;
 
     @BeforeEach
     void createTasksAndSetManager() {
@@ -28,23 +22,6 @@ class InMemoryHistoryManagerTest {
 
         task2 = new Task();
         task2.setTaskId(2);
-
-        epic1 = new Epic();
-        epic1.setTaskId(3);
-
-        subtask1 = new Subtask(epic1.getTaskId());
-        subtask1.setTaskId(4);
-
-        subtask2 = new Subtask(epic1.getTaskId());
-        subtask2.setTaskId(5);
-
-        epic2 = new Epic();
-        epic2.setTaskId(6);
-    }
-
-    @BeforeEach
-    public void setManager() {
-        manager = new InMemoryHistoryManager();
     }
 
     @Test
@@ -52,7 +29,7 @@ class InMemoryHistoryManagerTest {
         manager.linkLast(task1);
         List<Task> actualTasks = manager.getTasks();
         assertNotNull(actualTasks);
-        assertEquals(task1, actualTasks.get(0));
+        assertEquals(task1, actualTasks.get(0), "Задача не добавляется в историю.");
     }
 
     @Test
@@ -60,7 +37,7 @@ class InMemoryHistoryManagerTest {
         manager.linkLast(task1);
         manager.removeById(task1.getTaskId());
         List<Task> actualTasks = manager.getTasks();
-        assertTrue(actualTasks.isEmpty());
+        assertTrue(actualTasks.isEmpty(), "Задача не удаляется.");
     }
 
     @Test
@@ -69,8 +46,8 @@ class InMemoryHistoryManagerTest {
         manager.linkLast(task2);
         List<Task> actualTasks = manager.getTasks();
         assertNotNull(actualTasks);
-        assertEquals(task1, actualTasks.get(0));
-        assertEquals(task2, actualTasks.get(1));
+        assertEquals(task1, actualTasks.get(0), "Возвращается не та задача.");
+        assertEquals(task2, actualTasks.get(1), "Возвращается не та задача.");
     }
 
     @Test
@@ -80,7 +57,7 @@ class InMemoryHistoryManagerTest {
         String actualString = InMemoryHistoryManager.historyToString(manager);
         String expectedString = task1.getTaskId() + "," + task2.getTaskId() + ",";
         assertNotNull(actualString);
-        assertEquals(expectedString, actualString);
+        assertEquals(expectedString, actualString, "История возвращается в неправильном формате.");
     }
 
     @Test
@@ -88,7 +65,7 @@ class InMemoryHistoryManagerTest {
         String s = task1.getTaskId() + "," + task2.getTaskId() + ",";
         List<Integer> actualList = InMemoryHistoryManager.historyFromString(s);
         assertNotNull(actualList);
-        assertEquals(actualList.get(0), task1.getTaskId());
-        assertEquals(actualList.get(1), task2.getTaskId());
+        assertEquals(actualList.get(0), task1.getTaskId(), "Задача не добавляется в иторию.");
+        assertEquals(actualList.get(1), task2.getTaskId(), "Задача не добавляется в иторию.");
     }
 }
