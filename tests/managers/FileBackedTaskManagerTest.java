@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
 
-    Path path = Path.of("/Users/macbookpro/dev/java-kanban/tests/testsData/test_tasks_data.csv");
+    Path path = Path.of("tests/testsData/test_tasks_data.csv");
     @BeforeEach
     void setManager() {
         manager = new FileBackedTaskManager(path.toString());
