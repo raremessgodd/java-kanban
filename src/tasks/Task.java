@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public class Task {
     private String name;
     private int taskId;
+
     protected Status status;
     private LocalDateTime startTime;
     private Duration duration = Duration.ZERO;
@@ -106,5 +107,19 @@ public class Task {
             System.out.println("Ошибка преобразования: " + e.getMessage());
         }
         return task;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Task o = (Task) obj;
+        return o.taskId == this.taskId && o.name.equals(this.name) &&
+                o.startTime.equals(this.startTime) && o.duration.equals(this.duration)
+                && o.status.equals(this.status);
     }
 }

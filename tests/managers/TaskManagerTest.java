@@ -28,6 +28,30 @@ abstract class TaskManagerTest <T extends TaskManager> {
         subtask1 = new Subtask(epic1.getTaskId());
         subtask2 = new Subtask(epic1.getTaskId());
         epic2 = new Epic();
+
+        epic1.setName("epic1");
+
+        epic2.setName("epic2");
+
+        subtask1.setStartTime(LocalDateTime.now().plusDays(10));
+        subtask1.setDuration(Duration.ofHours(50));
+        subtask1.setStatus(Status.DONE);
+        subtask1.setName("subtask1");
+
+        subtask2.setStartTime(LocalDateTime.now().plusDays(20));
+        subtask2.setDuration(Duration.ofHours(10));
+        subtask2.setStatus(Status.IN_PROGRESS);
+        subtask2.setName("subtask2");
+
+        task1.setStartTime(LocalDateTime.now().plusDays(30));
+        task1.setDuration(Duration.ofHours(13));
+        task1.setStatus(Status.NEW);
+        task1.setName("task1");
+
+        task2.setStartTime(LocalDateTime.now().plusDays(40));
+        task2.setDuration(Duration.ofHours(40));
+        task2.setStatus(Status.DONE);
+        task2.setName("task2");
     }
 
     @Test
@@ -40,7 +64,8 @@ abstract class TaskManagerTest <T extends TaskManager> {
         expectedHistory.add(0, task1);
         expectedHistory.add(1, task2);
 
-        assertArrayEquals(actualHistory.toArray(), expectedHistory.toArray(), "История возвращается некорректно.");
+        assertNotNull(actualHistory, "Возвращается пустая история.");
+        assertEquals(actualHistory, expectedHistory, "История возвращается некорректно.");
     }
 
     @Test

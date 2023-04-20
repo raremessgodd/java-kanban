@@ -48,4 +48,17 @@ public class Epic extends Task {
     public String toString() {
         return super.toString() + subtasks.keySet() + ",";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Epic o = (Epic) obj;
+        return o.getTaskId() == this.getTaskId() && o.getName().equals(this.getName()) &&
+                o.subtasks.equals(this.subtasks);
+    }
 }

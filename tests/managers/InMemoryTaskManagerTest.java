@@ -7,6 +7,7 @@ import tasks.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,23 +17,10 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
         manager = new InMemoryTaskManager();
 
         manager.createEpic(epic1);
-
-        subtask1.setStartTime(LocalDateTime.now().plusDays(10));
-        subtask1.setDuration(Duration.ofHours(50));
         manager.createSubtask(subtask1);
-
-        subtask2.setStartTime(LocalDateTime.now().plusDays(20));
-        subtask2.setDuration(Duration.ofHours(10));
         manager.createSubtask(subtask2);
-
-        task1.setStartTime(LocalDateTime.now().plusDays(30));
-        task1.setDuration(Duration.ofHours(13));
         manager.createTask(task1);
-
-        task2.setStartTime(LocalDateTime.now().plusDays(40));
-        task2.setDuration(Duration.ofHours(40));
         manager.createTask(task2);
-
         manager.createEpic(epic2);
     }
 
@@ -43,7 +31,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
         task3.setDuration(Duration.ofHours(30));
 
         final EqualTimeException e = assertThrows(EqualTimeException.class, () -> manager.checkIntersection(task3));
-        assertEquals("Две задачи пересекаются по времени: id." +
-                task1.getTaskId() + " - id." + task3.getTaskId(), e.getMessage());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        assertEquals("Задачи пересекаются по времени: " +
+                task1.getStartTime().format(formatter) + " -> " + task1.getEndTime().format(formatter) + " ∩ "
+                + task3.getStartTime().format(formatter) + " -> " + task3.getEndTime().format(formatter), e.getMessage());
     }
 }

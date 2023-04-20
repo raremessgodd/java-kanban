@@ -1,5 +1,6 @@
 package managers;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import exceptions.EqualTimeException;
@@ -19,6 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
         return id++;
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks() {
         prioritizedTasks.addAll(allTasks.values());
         prioritizedTasks.addAll(allSubtasks.values());
@@ -29,8 +31,10 @@ public class InMemoryTaskManager implements TaskManager {
         for (Task task: getPrioritizedTasks()) {
             if (!other.getStartTime().isAfter(task.getEndTime()) &&
                     !other.getEndTime().isBefore(task.getStartTime())) {
-                throw new EqualTimeException("Две задачи пересекаются по времени: id." +
-                        task.getTaskId() + " - id." + other.getTaskId());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+                throw new EqualTimeException("Задачи пересекаются по времени: " + task.getStartTime().format(formatter)
+                        + " -> " + task.getEndTime().format(formatter) + " ∩ " + other.getStartTime().format(formatter)
+                        + " -> " + other.getEndTime().format(formatter));
             }
         }
     }
@@ -62,8 +66,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask (Task task) {
-        task.setTaskId(setId());
         checkIntersection(task);
+        task.setTaskId(setId());
         allTasks.put(task.getTaskId(), task);
     }
 
@@ -75,8 +79,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask (Subtask subtask) {
-        subtask.setTaskId(setId());
         checkIntersection(subtask);
+        subtask.setTaskId(setId());
         allSubtasks.put(subtask.getTaskId(), subtask);
         allEpics.get(subtask.getEpicId()).addSubtask(subtask);
         updateEpicStatus(allEpics.get(subtask.getEpicId()));
@@ -151,8 +155,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask (Task newTask, int id) {
-        newTask.setTaskId(id);
+        allTasks.remove(id);
         checkIntersection(newTask);
+        newTask.setTaskId(id);
         allTasks.put(newTask.getTaskId(), newTask);
     }
 
@@ -169,9 +174,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask (Subtask newSubtask, int id) {
-        newSubtask.setTaskId(id);
-        checkIntersection(newSubtask);
         allEpics.get(newSubtask.getEpicId()).removeSubtask(allSubtasks.get(id));
+        allSubtasks.remove(id);
+        checkIntersection(newSubtask);
+        newSubtask.setTaskId(id);
         allEpics.get(newSubtask.getEpicId()).addSubtask(newSubtask);
         allSubtasks.put(newSubtask.getTaskId(), newSubtask);
         updateEpicStatus(allEpics.get(newSubtask.getEpicId()));

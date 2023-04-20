@@ -1,13 +1,10 @@
 package managers;
 
 import org.junit.jupiter.api.*;
-import tasks.Status;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,29 +15,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
     @BeforeEach
     void setManager() {
         manager = new FileBackedTaskManager(path.toString());
-
         manager.createEpic(epic1);
-
-        subtask1.setStartTime(LocalDateTime.now().plusDays(10));
-        subtask1.setDuration(Duration.ofHours(50));
-        subtask1.setStatus(Status.DONE);
         manager.createSubtask(subtask1);
-
-        subtask2.setStartTime(LocalDateTime.now().plusDays(20));
-        subtask2.setDuration(Duration.ofHours(10));
-        subtask2.setStatus(Status.IN_PROGRESS);
         manager.createSubtask(subtask2);
-
         manager.createEpic(epic2);
-
-        task1.setStartTime(LocalDateTime.now().plusDays(30));
-        task1.setDuration(Duration.ofHours(13));
-        task1.setStatus(Status.NEW);
         manager.createTask(task1);
-
-        task2.setStartTime(LocalDateTime.now().plusDays(40));
-        task2.setDuration(Duration.ofHours(40));
-        task2.setStatus(Status.DONE);
         manager.createTask(task2);
     }
 

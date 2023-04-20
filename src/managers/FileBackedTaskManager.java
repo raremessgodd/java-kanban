@@ -70,7 +70,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    public void save () throws ManagerSaveException {
+    protected void save () throws ManagerSaveException {
 
         try (Writer writer = Files.newBufferedWriter(Paths.get(path))) {
 
