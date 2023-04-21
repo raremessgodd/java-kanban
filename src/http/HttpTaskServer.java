@@ -202,6 +202,20 @@ public class HttpTaskServer {
             return queryMap;
         }
 
+        private Optional<Integer> extractIdFromQuery(HttpExchange exchange) throws IOException {
+            Map<String, String> queryMap = readQuery(exchange);
+            if (queryMap.containsKey("id")) {
+                try {
+                    return Optional.of(Integer.parseInt(queryMap.get("id")));
+                } catch (NumberFormatException e) {
+                    sendResponse(exchange, 400, "Некорректный идентификатор задачи.");
+                }
+            } else {
+                sendResponse(exchange, 400, "Неккоректный запрос.");
+            }
+            return Optional.empty();
+        }
+
         private void sendResponse(HttpExchange exchange, int rCode, String text) throws IOException {
             try (OutputStream stream = exchange.getResponseBody()){
                 byte[] resp = text.getBytes(UTF_8);
@@ -286,68 +300,65 @@ public class HttpTaskServer {
         }
 
         private void handleDeleteTaskById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    manager.deleteTaskById(id);
-                    sendResponse(exchange, 200, "Задача удалена.");
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор задачи.");
-                }
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
+                manager.deleteTaskById(id);
+                sendResponse(exchange, 200, "Задача удалена.");
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
             }
         }
 
         private void handleGetTaskById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    Task task = null;
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
 
-                    for (Task other: manager.getAllTasks()) {
-                        if (other.getTaskId() == id) {
-                            task = manager.getTaskById(id);
-                        }
-                    }
-
-                    if (task != null) {
-                        String jsonTask = gson.toJson(task);
-                        sendResponse(exchange, 200, jsonTask);
-                    } else {
-                        sendResponse(exchange, 404, "Задача не найдена.");
-                    }
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор задачи.");
-                }
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
+            }
+
+            Task task = null;
+
+            for (Task other: manager.getAllTasks()) {
+                if (other.getTaskId() == id) {
+                    task = manager.getTaskById(id);
+                }
+            }
+
+            if (task != null) {
+                String jsonTask = gson.toJson(task);
+                sendResponse(exchange, 200, jsonTask);
+            } else {
+                sendResponse(exchange, 404, "Задача не найдена.");
             }
         }
 
         private void handleGetEpicSubtasks(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    if (manager.getEpicById(id) != null) {
-                        Epic epic = manager.getEpicById(id);
-                        ArrayList<Subtask> subtasks = manager.getEpicSubtasks(epic.getTaskId());
-                        if (!subtasks.isEmpty()) {
-                            sendResponse(exchange, 200, gson.toJson(subtasks));
-                        } else {
-                            sendResponse(exchange, 200, "У этого эпика пока нет подзадач.");
-                        }
-                    } else {
-                        sendResponse(exchange, 404, "Эпик не найден.");
-                    }
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор задачи.");
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
+
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
+            } else {
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
+            }
+
+            if (manager.getEpicById(id) != null) {
+                Epic epic = manager.getEpicById(id);
+                ArrayList<Subtask> subtasks = manager.getEpicSubtasks(epic.getTaskId());
+                if (!subtasks.isEmpty()) {
+                    sendResponse(exchange, 200, gson.toJson(subtasks));
+                } else {
+                    sendResponse(exchange, 200, "У этого эпика пока нет подзадач.");
                 }
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 404, "Эпик не найден.");
             }
         }
 
@@ -400,44 +411,44 @@ public class HttpTaskServer {
         }
 
         private void handleDeleteEpicById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    manager.deleteEpicById(id);
-                    sendResponse(exchange, 200, "Эпик удален.");
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор эпика.");
-                }
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
+
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
             }
+
+            manager.deleteEpicById(id);
+            sendResponse(exchange, 200, "Эпик удален.");
         }
 
         private void handleGetEpicById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    Epic epic = null;
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
 
-                    for (Epic other: manager.getAllEpics()) {
-                        if (other.getTaskId() == id) {
-                            epic = manager.getEpicById(id);
-                        }
-                    }
-
-                    if (epic != null) {
-                        String jsonSubtask = gson.toJson(epic);
-                        sendResponse(exchange, 200, jsonSubtask);
-                    } else {
-                        sendResponse(exchange, 404, "Эпик не найден.");
-                    }
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор эпика.");
-                }
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
+            }
+
+            Epic epic = null;
+
+            for (Epic other: manager.getAllEpics()) {
+                if (other.getTaskId() == id) {
+                    epic = manager.getEpicById(id);
+                }
+            }
+
+            if (epic != null) {
+                String jsonSubtask = gson.toJson(epic);
+                sendResponse(exchange, 200, jsonSubtask);
+            } else {
+                sendResponse(exchange, 404, "Эпик не найден.");
             }
         }
 
@@ -502,44 +513,44 @@ public class HttpTaskServer {
         }
 
         private void handleDeleteSubtaskById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    manager.deleteSubtaskById(id);
-                    sendResponse(exchange, 200, "Подзадача удалена.");
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор подзадачи.");
-                }
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
+
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
             }
+
+            manager.deleteSubtaskById(id);
+            sendResponse(exchange, 200, "Подзадача удалена.");
         }
 
         private void handleGetSubtaskById(HttpExchange exchange) throws IOException {
-            Map<String, String> queryMap = readQuery(exchange);
-            if (queryMap.containsKey("id")) {
-                try {
-                    int id = Integer.parseInt(queryMap.get("id"));
-                    Subtask subtask = null;
+            Optional<Integer> optionalId = extractIdFromQuery(exchange);
+            int id;
 
-                    for (Subtask other: manager.getAllSubtasks()) {
-                        if (other.getTaskId() == id) {
-                            subtask = manager.getSubtaskById(id);
-                        }
-                    }
-
-                    if (subtask != null) {
-                        String jsonSubtask = gson.toJson(subtask);
-                        sendResponse(exchange, 200, jsonSubtask);
-                    } else {
-                        sendResponse(exchange, 404, "Подзадача не найдена.");
-                    }
-                } catch (NumberFormatException e) {
-                    sendResponse(exchange, 400, "Некорректный идентификатор подзадачи.");
-                }
+            if (optionalId.isPresent()) {
+                id = optionalId.get();
             } else {
-                sendResponse(exchange, 404, "Неккоректный запрос.");
+                sendResponse(exchange, 400, "Нужно передать значение id.");
+                return;
+            }
+
+            Subtask subtask = null;
+
+            for (Subtask other: manager.getAllSubtasks()) {
+                if (other.getTaskId() == id) {
+                    subtask = manager.getSubtaskById(id);
+                }
+            }
+
+            if (subtask != null) {
+                String jsonSubtask = gson.toJson(subtask);
+                sendResponse(exchange, 200, jsonSubtask);
+            } else {
+                sendResponse(exchange, 404, "Подзадача не найдена.");
             }
         }
 

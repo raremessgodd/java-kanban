@@ -9,6 +9,7 @@ import tasks.Task;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.function.BiConsumer;
 
 public class HttpTaskManager extends FileBackedTaskManager {
     private final KVTaskClient client;
@@ -21,34 +22,29 @@ public class HttpTaskManager extends FileBackedTaskManager {
     private void load() {
         Gson gson = new Gson();
 
-        String tasks = client.load("TASKS");
-        String subtasks = client.load("SUBTASKS");
-        String epics = client.load("EPICS");
-        String stringHistory = client.load("HISTORY");
+        String tasks = client.load("TASKS").orElse(null);
+        String subtasks = client.load("SUBTASKS").orElse(null);
+        String epics = client.load("EPICS").orElse(null);
+        String stringHistory = client.load("HISTORY").orElse(null);
         Type taskType = new TypeToken<ArrayList<Task>>(){}.getType();
-        ArrayList<Task> allTasks = gson.fromJson(tasks, taskType);
 
         Type subtaskType = new TypeToken<ArrayList<Subtask>>(){}.getType();
-        ArrayList<Subtask> allSubtasks = gson.fromJson(subtasks, subtaskType);
 
         Type epicType = new TypeToken<ArrayList<Epic>>(){}.getType();
-        ArrayList<Epic> allEpics = gson.fromJson(epics, epicType);
 
-        ArrayList<Task> history  = gson.fromJson(stringHistory, taskType);
+        deserializeAndSet(gson, tasks, taskType, allTasks::put);
+        deserializeAndSet(gson, subtasks, subtaskType, allSubtasks::put);
+        deserializeAndSet(gson, epics, epicType, allEpics::put);
+        deserializeAndSet(gson, stringHistory, taskType, (BiConsumer<Integer, Task>) (integer, task) -> history.linkLast(task));
+    }
 
-        if (allTasks != null) {
-            allTasks.forEach(task -> this.allTasks.put(task.getTaskId(), task));
-        }
-        if (allSubtasks != null) {
-            allSubtasks.forEach(subtask -> this.allSubtasks.put(subtask.getTaskId(), subtask));
-        }
-        if (allEpics != null) {
-            allEpics.forEach(epic -> this.allEpics.put(epic.getTaskId(), epic));
-        }
-        if (history != null) {
-            history.forEach(this.history::linkLast);
+    private <T> void deserializeAndSet(Gson gson, String json, Type type, BiConsumer<Integer, T> consumer) {
+        ArrayList<T> list = gson.fromJson(json, type);
+        if (list != null) {
+            list.forEach(item -> consumer.accept(((Task) item).getTaskId(), item));
         }
     }
+
     @Override
     public void save() {
         Gson gson = new Gson();

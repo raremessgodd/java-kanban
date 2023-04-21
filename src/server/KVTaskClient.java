@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Optional;
 
 public class KVTaskClient {
     private final String apiToken;
@@ -14,19 +15,19 @@ public class KVTaskClient {
     public KVTaskClient(String url) {
         client = HttpClient.newHttpClient();
         this.url = URI.create(url);
-        this.apiToken = generateApiToken(url);
+        this.apiToken = generateApiToken(url).orElse(null);
     }
 
-    private String generateApiToken(String url) {
+    private Optional<String> generateApiToken(String url) {
         try {
             URI requestUri = URI.create(url + "register/");
             HttpRequest request =  HttpRequest.newBuilder().uri(requestUri).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
+            return Optional.of(response.body());
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время получения API ключа произошла ошибка.");
         }
-        return "";
+        return Optional.empty();
     }
 
     public void put(String key, String json) {
@@ -45,7 +46,7 @@ public class KVTaskClient {
         }
     }
 
-    public String load(String key) {
+    public Optional<String> load(String key) {
         try {
             URI requestUri = URI.create(url + "load/" + key + "?API_TOKEN=" + apiToken);
 
@@ -53,10 +54,10 @@ public class KVTaskClient {
                     .GET()
                     .uri(requestUri)
                     .build();
-            return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return Optional.of(response.body());
         } catch (IOException | InterruptedException e) {
-            return "";
+            return Optional.empty();
         }
     }
 }

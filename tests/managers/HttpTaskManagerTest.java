@@ -50,10 +50,10 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager>{
         Gson gson = new Gson();
 
         KVTaskClient kvClient = new KVTaskClient(uri);
-        String tasks = kvClient.load("TASKS");
-        String subtasks = kvClient.load("SUBTASKS");
-        String epics = kvClient.load("EPICS");
-        String stringHistory = kvClient.load("HISTORY");
+        String tasks = kvClient.load("TASKS").orElse(null);
+        String subtasks = kvClient.load("SUBTASKS").orElse(null);
+        String epics = kvClient.load("EPICS").orElse(null);
+        String stringHistory = kvClient.load("HISTORY").orElse(null);
         Type taskType = new TypeToken<ArrayList<Task>>(){}.getType();
         ArrayList<Task> testAllTasks = gson.fromJson(tasks, taskType);
 
